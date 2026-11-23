@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>计量室超差器具复判班报</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">计</span>
+    <div>
+      <h1>超差器具零件复判班报</h1>
+      <p>同批同器具同时段共用修正量 · 极值件数与取值留痕</p>
+    </div>
+  </div>
+  <div id="session-box" class="session hidden">
+    <span id="session-name" class="session-name"></span>
+    <button id="btn-logout" class="btn btn-ghost" type="button">退出</button>
+  </div>
+</header>
+
+<main class="layout">
+  <!-- 登录 -->
+  <section id="view-login" class="card login-card">
+    <h2>值班登录</h2>
+    <form id="form-login" class="form">
+      <label>账号<input name="username" autocomplete="username" required value="analyst"></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" required value="analyst-demo-2611"></label>
+      <button class="btn btn-primary" type="submit">登录班报</button>
+    </form>
+    <p class="hint">演示账号：admin / admin-demo-2611（主管）、analyst / analyst-demo-2611（分析员）、viewer / viewer-demo-2611（只读）</p>
+    <div id="login-error" class="alert hidden"></div>
+  </section>
+
+  <div id="workspace" class="hidden">
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="report" type="button">班报总览</button>
+      <button class="tab" data-tab="import" type="button">导入与更正</button>
+      <button class="tab" data-tab="history" type="button">运行留痕</button>
+      <button class="tab admin-only" data-tab="audit" type="button">审计记录</button>
+    </nav>
+
+    <!-- 班报总览 -->
+    <section id="tab-report" class="tab-panel">
+      <div class="panel-head">
+        <h2>批次复判结果</h2>
+        <button id="btn-refresh" class="btn btn-ghost" type="button">刷新</button>
+      </div>
+      <div id="batch-cards" class="batch-grid"></div>
+      <div id="batch-detail" class="card hidden"></div>
+    </section>
+
+    <!-- 导入 -->
+    <section id="tab-import" class="tab-panel hidden">
+      <div class="import-grid">
+        <div class="card">
+          <h2>导入逐件读数</h2>
+          <p class="hint">UTF-8 CSV，字段：批次编号、产品、规格下限、规格上限、零件编号、读数、器具编号、测量时间。同批共用规格上下限。</p>
+          <textarea id="csv-readings" rows="10" placeholder="粘贴 CSV 内容，或选择文件载入"></textarea>
+          <div class="row">
+            <input type="file" id="file-readings" accept=".csv,text/csv">
+            <button id="btn-import-readings" class="btn btn-primary writer-only" type="button">导入读数批次</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>修正范围补录 / 迟到更正</h2>
+          <p class="hint">字段：器具编号、时段开始、时段结束、修正下限、修正上限、来源。同器具同时段已存在时生成新版本并令受影响批次等待重算。</p>
+          <textarea id="csv-corrections" rows="10" placeholder="粘贴修正范围 CSV"></textarea>
+          <div class="row">
+            <input type="file" id="file-corrections" accept=".csv,text/csv">
+            <button id="btn-import-corrections" class="btn btn-primary writer-only" type="button">提交修正记录</button>
+          </div>
+          <div id="correction-table-wrap"></div>
+        </div>
+      </div>
+      <div id="import-feedback" class="alert hidden"></div>
+    </section>
+
+    <!-- 运行留痕 -->
+    <section id="tab-history" class="tab-panel hidden">
+      <div class="panel-head"><h2>复判运行链（旧结果只供追查）</h2></div>
+      <div class="table-wrap">
+        <table id="runs-table">
+          <thead><tr>
+            <th>#</th><th>批次</th><th>开始</th><th>完成</th><th>状态</th><th>原因</th><th>说明</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 审计 -->
+    <section id="tab-audit" class="tab-panel hidden">
+      <div class="panel-head"><h2>审计事件</h2></div>
+      <div class="table-wrap">
+        <table id="audit-table">
+          <thead><tr><th>时间</th><th>操作人</th><th>动作</th><th>对象</th><th>详情</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+<script src="app.js"></script>
+</body>
+</html>
